@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import {
   GroupParam,
   GroupParamKeyEnum,
@@ -24,15 +24,15 @@ const AccordionRow: React.FC<AccordionRowProps> = ({
   const [isPII, setIsPII] = useState(row.pii);
   const [isMasked, setIsMasked] = useState(row.masked);
 
-  const handlePIIClick = useCallback(() => {
+  const handlePIIClick = () => {
     setIsPII((prevIsPII) => !prevIsPII);
     handleToggle(group, row.name, GroupParamKeyEnum.pii);
-  }, [group, handleToggle, row.name]);
+  };
 
-  const handleMaskedClick = useCallback(() => {
+  const handleMaskedClick = () => {
     setIsMasked((prevIsMasked) => !prevIsMasked);
     handleToggle(group, row.name, GroupParamKeyEnum.masked);
-  }, [group, handleToggle, row.name]);
+  };
 
   return (
     <tr>
@@ -56,9 +56,7 @@ const AccordionRow: React.FC<AccordionRowProps> = ({
         </StyledButton>
       </td>
       <td>
-        <StyledType variant="contained" onClick={handleMaskedClick}>
-          {row.type}
-        </StyledType>
+        <StyledType variant="contained">{row.type}</StyledType>
       </td>
     </tr>
   );

@@ -13,12 +13,12 @@ interface HeaderPanelProps {
   path: string;
 }
 
-const AllAPIS = 'All APIS';
+const ALL_APIS = 'All APIS';
 
 const HeaderPanel: React.FC<HeaderPanelProps> = ({ method, apiName, path }) => {
   const breadcrumbs = [
-    <Typography key={AllAPIS} variant="subtitle2">
-      {AllAPIS}
+    <Typography key={ALL_APIS} variant="subtitle2">
+      {ALL_APIS}
     </Typography>,
     <Typography key={apiName} variant="subtitle2">
       {apiName}

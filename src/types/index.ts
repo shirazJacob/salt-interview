@@ -1,5 +1,3 @@
-import RouteDetails from '../components/RouteDetails';
-
 export enum TableGroup {
   urlParams = 'URL Parameters',
   queryParams = 'Query Parameters',

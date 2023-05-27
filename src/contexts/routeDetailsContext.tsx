@@ -8,6 +8,7 @@ import React, {
 import {
   Filters,
   GroupParam,
+  GroupParamKeyEnum,
   RequestResponseParams,
   RouteDetails,
   RouteTabs,
@@ -16,7 +17,12 @@ import routeDetailsData from '../data/fe_data.json';
 
 interface RouteDetailsContextProps {
   routeDetails: RouteDetails | null;
-  updateRoute: (newRoute: RouteDetails) => void;
+  updateRouteDetails: (
+    group: keyof RequestResponseParams,
+    fieldName: string,
+    key: keyof GroupParam,
+    tab: RouteTabs
+  ) => void;
   filteredData: RouteDetails | null;
   filters: Filters | null;
   setFilters: (filters: Filters) => void;
@@ -24,7 +30,7 @@ interface RouteDetailsContextProps {
 
 export const RouteDetailsContext = createContext<RouteDetailsContextProps>({
   routeDetails: null,
-  updateRoute: () => {},
+  updateRouteDetails: () => {},
   filteredData: null,
   filters: null,
   setFilters: () => {},
@@ -37,6 +43,12 @@ export const RouteDetailsProvider: React.FC<{ children: ReactNode }> = ({
   const [filteredData, setFilteredData] = useState<RouteDetails | null>(null);
   const [filters, setFilters] = useState<Filters | null>(null);
 
+  const fetchData = () => {
+    let jsonData: RouteDetails = routeDetailsData;
+    setRouteDetails(jsonData);
+    setFilteredData(jsonData);
+  };
+
   const filterRouteDetails = useCallback(() => {
     if (filters && routeDetails) {
       const searchValue = filters.filters.searchValue
@@ -47,13 +59,13 @@ export const RouteDetailsProvider: React.FC<{ children: ReactNode }> = ({
         (filters.tab === RouteTabs.request ||
           filters.tab === RouteTabs.response)
       ) {
-        const requestResponseData = routeDetails[filters.tab];
+        const requestResponseData = { ...routeDetails[filters.tab] };
         if (requestResponseData) {
           let filteredObj: RequestResponseParams = { ...requestResponseData };
           let filteredArray = Object.entries(requestResponseData);
 
           filteredArray.forEach(([group, arrParams]) => {
-            const filteredValue = arrParams.filter(
+            const filteredValue = arrParams?.filter(
               (param: GroupParam) =>
                 (param.name === searchValue || param.type === searchValue) &&
                 (filters.filters.piiChecked ? param.pii : true)
@@ -63,28 +75,60 @@ export const RouteDetailsProvider: React.FC<{ children: ReactNode }> = ({
 
           setFilteredData({ ...routeDetails, [filters.tab]: filteredObj });
         }
+      } else {
+        setFilteredData(routeDetails);
       }
     }
   }, [filters, routeDetails]);
 
   useEffect(() => {
     fetchData();
+  }, []);
+
+  useEffect(() => {
     filterRouteDetails();
-  }, [filterRouteDetails, filters]);
+  }, [filterRouteDetails]);
 
-  const fetchData = () => {
-    let jsonData: RouteDetails = routeDetailsData;
-    setRouteDetails(jsonData);
-    setFilteredData(jsonData);
-  };
+  const updateRouteDetails = useCallback(
+    (
+      group: keyof RequestResponseParams,
+      fieldName: string,
+      key: keyof GroupParam,
+      tab: RouteTabs
+    ) => {
+      if (routeDetails) {
+        const updateData = { ...routeDetails[tab] };
+        if (updateData) {
+          const groupParams = updateData[group];
+          if (groupParams) {
+            let updatedField = groupParams.find(
+              (field) => field.name === fieldName
+            );
+            if (updatedField) {
+              if (
+                key === GroupParamKeyEnum.pii ||
+                key === GroupParamKeyEnum.masked
+              ) {
+                updatedField[key] = !updatedField[key];
+              }
 
-  const updateRoute = (newData: RouteDetails) => {
-    setRouteDetails(newData);
-  };
+              let updatedRouteDetails: RouteDetails = {
+                ...routeDetails,
+                [tab]: updateData,
+              };
+
+              setRouteDetails(updatedRouteDetails);
+            }
+          }
+        }
+      }
+    },
+    [routeDetails]
+  );
 
   const contextValue: RouteDetailsContextProps = {
     routeDetails,
-    updateRoute,
+    updateRouteDetails,
     filteredData,
     filters,
     setFilters,
@@ -93,6 +137,7 @@ export const RouteDetailsProvider: React.FC<{ children: ReactNode }> = ({
   if (!routeDetails) {
     return <div>Loading...</div>;
   }
+
   return (
     <RouteDetailsContext.Provider value={contextValue}>
       {children}

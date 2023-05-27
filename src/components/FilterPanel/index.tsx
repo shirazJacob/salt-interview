@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
-import { Filters, RouteFilters, RouteTabs } from '../../types';
+import { RouteFilters } from '../../types';
 import {
   FilterPanelRow,
   Search,
@@ -33,11 +33,11 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
     setPIIChecked(event.target.checked);
   };
 
-  const handleResetFilter = useCallback(() => {
+  const handleResetFilter = () => {
     setSearchValue('');
     setPIIChecked(false);
     onResetFilter();
-  }, [onResetFilter]);
+  };
 
   const handleApplyFilter = () => {
     if (searchValue) {

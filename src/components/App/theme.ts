@@ -36,8 +36,6 @@ export const theme = createTheme({
       fontSize: '26px',
       lineHeight: '39px',
     },
-    h3: {},
-    caption: {},
     subtitle1: {
       fontWeight: 'normal',
       fontSize: '12px',
@@ -80,7 +78,6 @@ export const theme = createTheme({
         root: {
           fontWeight: 'normal',
           textTransform: 'none',
-          padding: '0px',
           borderRadius: '6px',
           boxShadow: 'none',
         },

@@ -32,8 +32,8 @@ const Table: React.FC<TableProps> = ({ rows, handleToggle }) => {
         <thead>
           <tr>
             <th></th>
-            {tableHeaders.map((header, index) => (
-              <th key={index}>
+            {tableHeaders.map((header) => (
+              <th key={header.key}>
                 <StyledSeparator />
                 {header.label}
               </th>
