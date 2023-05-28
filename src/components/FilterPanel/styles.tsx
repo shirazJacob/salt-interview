@@ -1,3 +1,4 @@
+import React from 'react';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { Button, styled } from '@mui/material';
 import Icon from '../Icon';
@@ -70,20 +71,22 @@ interface SearchProps {
   searchValue: string;
 }
 
-export const Search = ({ handleSearchChange, searchValue }: SearchProps) => {
-  return (
-    <SearchInputContainer>
-      <Icon icon={faMagnifyingGlass} />
-      <SearchInput
-        id="search-input"
-        type="text"
-        placeholder="Search"
-        value={searchValue}
-        onChange={handleSearchChange}
-      />
-    </SearchInputContainer>
-  );
-};
+export const Search = React.memo(
+  ({ handleSearchChange, searchValue }: SearchProps) => {
+    return (
+      <SearchInputContainer>
+        <Icon icon={faMagnifyingGlass} />
+        <SearchInput
+          id="search-input"
+          type="text"
+          placeholder="Search"
+          value={searchValue}
+          onChange={handleSearchChange}
+        />
+      </SearchInputContainer>
+    );
+  }
+);
 
 export const StyledApplyButton = styled(Button)({
   height: '100%',

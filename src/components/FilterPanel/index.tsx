@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import { RouteFilters } from '../../types';
 import {
@@ -23,30 +23,34 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   const [searchValue, setSearchValue] = useState('');
   const [piiChecked, setPIIChecked] = useState(false);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(event.target.value);
-  };
+  const handleSearchChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchValue(event.target.value);
+    },
+    []
+  );
 
-  const handlePIICheckboxChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setPIIChecked(event.target.checked);
-  };
+  const handlePIICheckboxChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setPIIChecked(event.target.checked);
+    },
+    []
+  );
 
-  const handleResetFilter = () => {
+  const handleResetFilter = useCallback(() => {
     setSearchValue('');
     setPIIChecked(false);
     onResetFilter();
-  };
+  }, [onResetFilter]);
 
-  const handleApplyFilter = () => {
+  const handleApplyFilter = useCallback(() => {
     if (searchValue) {
       onApplyFilter({
         searchValue: searchValue,
         piiChecked: piiChecked,
       });
     }
-  };
+  }, [onApplyFilter, piiChecked, searchValue]);
 
   return (
     <StyledFilterPanel>
@@ -72,4 +76,4 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   );
 };
 
-export default FilterPanel;
+export default React.memo(FilterPanel);
